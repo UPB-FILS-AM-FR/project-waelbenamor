@@ -1,0 +1,51 @@
+#include <NewPing.h>
+
+#define RED_LED_PIN 8
+#define YELLOW_LED_PIN 9
+#define GREEN_LED_PIN 10
+#define BUZZER_PIN 11
+
+#define TRIGGER_PIN 12
+#define ECHO_PIN 13
+#define MAX_DISTANCE 200
+
+NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
+
+void setup() {
+  pinMode(RED_LED_PIN, OUTPUT);
+  pinMode(YELLOW_LED_PIN, OUTPUT);
+  pinMode(GREEN_LED_PIN, OUTPUT);
+  pinMode(BUZZER_PIN, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int distance = sonar.ping_cm();
+  Serial.print("Distance détectée : ");
+  Serial.print(distance);
+  Serial.println(" cm");
+
+  if (distance > 0 && distance < 50) {
+    digitalWrite(RED_LED_PIN, LOW);
+    digitalWrite(YELLOW_LED_PIN, LOW);
+    digitalWrite(GREEN_LED_PIN, HIGH);
+    digitalWrite(BUZZER_PIN, HIGH);
+    Serial.println("Feu Vert - Passage autorisé");
+    delay(5000);
+    digitalWrite(GREEN_LED_PIN, LOW);
+    digitalWrite(YELLOW_LED_PIN, HIGH);
+    digitalWrite(BUZZER_PIN, LOW);
+    delay(2000);
+    digitalWrite(YELLOW_LED_PIN, LOW);
+    digitalWrite(RED_LED_PIN, HIGH);
+    delay(5000);
+  } else {
+    digitalWrite(RED_LED_PIN, HIGH);
+    digitalWrite(YELLOW_LED_PIN, LOW);
+    digitalWrite(GREEN_LED_PIN, LOW);
+    digitalWrite(BUZZER_PIN, LOW);
+    Serial.println("Feu Rouge - Objet non détecté");
+  }
+
+  delay(500);
+}
